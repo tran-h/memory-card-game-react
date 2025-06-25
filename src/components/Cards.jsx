@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles/Cards.css";
 
 //Top 10 most popular Pokemon in 2021 according to https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_of_the_Year
-const urls = [
+let urls = [
   "https://pokeapi.co/api/v2/pokemon/dedenne",
   "https://pokeapi.co/api/v2/pokemon/cinccino",
   "https://pokeapi.co/api/v2/pokemon/sableye",
@@ -18,7 +18,21 @@ const urls = [
 export default function Cards() {
   const [pokemonList, setPokemonList] = useState([]);
 
+  //shuffles an array using the Fisher-Yates shuffling algorithm
+  function shuffleArray(arrayToShuffle) {
+    const shuffledArray = [...arrayToShuffle];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  }
+
   useEffect(() => {
+    urls = shuffleArray(urls);
     const fetchAll = async () => {
       try {
         const responses = await Promise.all(urls.map((url) => fetch(url)));
@@ -40,7 +54,11 @@ export default function Cards() {
   return (
     <div className="container">
       {pokemonList.map((pokemon) => (
-        <div key={pokemon.id} className="card">
+        <div
+          key={pokemon.id}
+          className="card"
+          onClick={() => setPokemonList(shuffleArray(pokemonList))}
+        >
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
             alt={pokemon.name}
