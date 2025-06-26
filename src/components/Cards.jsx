@@ -15,7 +15,7 @@ let urls = [
   "https://pokeapi.co/api/v2/pokemon/flygon",
 ];
 
-export default function Cards() {
+export default function Cards({ calculateScore, selectedPokemon }) {
   const [pokemonList, setPokemonList] = useState([]);
 
   //shuffles an array using the Fisher-Yates shuffling algorithm
@@ -57,7 +57,10 @@ export default function Cards() {
         <div
           key={pokemon.id}
           className="card"
-          onClick={() => setPokemonList(shuffleArray(pokemonList))}
+          onClick={() => {
+            setPokemonList(shuffleArray(pokemonList));
+            calculateScore(pokemon.id, selectedPokemon);
+          }}
         >
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
