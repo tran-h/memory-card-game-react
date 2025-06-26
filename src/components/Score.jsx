@@ -1,11 +1,23 @@
 import { useState } from "react";
 import "../styles/Score.css";
 import Cards from "./Cards";
+import Modal from "./Modal";
 
 export default function Score() {
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [selectedPokemon, setSelectedPokemon] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalText, setModalText] = useState("");
+
+  function openModal(text) {
+    setModalText(text);
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
 
   function calculateScore(pokemonId, arrayOfSelectedPokemon) {
     if (!arrayOfSelectedPokemon.includes(pokemonId)) {
@@ -15,7 +27,7 @@ export default function Score() {
       if (currScore === 10) {
         setSelectedPokemon([]);
         setScore(0);
-        alert("You win!");
+        openModal("You win!");
         return;
       }
       const newArr = [...selectedPokemon];
@@ -24,7 +36,7 @@ export default function Score() {
     } else {
       setSelectedPokemon([]);
       setScore(0);
-      alert("You lose! You already chose that Pokemon :(");
+      openModal("You lose! You already chose that Pokemon :(");
     }
   }
 
@@ -42,6 +54,7 @@ export default function Score() {
         calculateScore={calculateScore}
         selectedPokemon={selectedPokemon}
       />
+      <Modal isOpen={isModalOpen} closeModal={closeModal} text={modalText} />
     </>
   );
 }
